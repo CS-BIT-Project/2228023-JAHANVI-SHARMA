@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Task Flow - Manage Your Tasks</title>
+        <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+    <!-- AOS Animation Library -->
+     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+     <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css">
+     <!-- Google Fonts -->
+      <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+      <style>
+      body { font-family: 'Poppins', sans-serif; }
+      .bg-animated {
+        background: linear-gradient(-45deg, #ff9a9e, #fad0c4, #ffdde1);
+        background-size: 400% 400%;
+        animation: gradientBG 6s ease infinite;}
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }}
+        .glow-btn {
+            transition: all 0.3s ease-in-out;}
+        .glow-btn:hover {
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.6);
+            transform: scale(1.05);}
+        .typing-text::after {
+            content: "|";
+            display: inline-block;
+            animation: typing 0.8s infinite;}
+        @keyframes typing {
+            0% { opacity: 1; }
+            50% { opacity: 0; }
+            100% { opacity: 1; }}
+            .dark { background: #1A202C; color: white; }
+        </style>
+    </head>
+    <body class="bg-gray-100">
+    <!-- Navbar -->
+     <nav class="bg-blue-600 text-white px-6 py-4 flex justify-between items-center">
+        <div class="flex items-center space-x-3">
+            <div class="bg-white p-2 rounded-full shadow-md">
+                <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path>
+                </svg>
+            </div>
+            <span class="text-2xl font-bold tracking-wide">Task Flow</span>
+        </div>
+        <div class="space-x-6">
+            <a href="index.html" class="hover:underline">Home</a>
+            <a href="features.html" class="hover:underline">Features</a>
+            <a href="about.html" class="hover:underline">About</a>
+            <a href="contact.html" class="hover:underline">Contact</a>
+            <a href="loginpage.html" class="bg-white text-blue-600 px-4 py-2 rounded-lg font-semibold hover:bg-gray-200">Login</a>
+        </div>
+    </nav>
+    <!-- Hero Section -->
+     <header class="bg-animated text-white py-20">
+        <div class="container mx-auto flex flex-col md:flex-row items-center px-6 md:px-12">
+    <!-- Text -->
+     <div class="md:w-1/2 text-center md:text-left">
+        <h1 class="text-5xl font-bold">
+            <span class="typing-text" id="typing-text"></span>
+        </h1>
+        <p class="text-lg mt-4">Organize Your Day, Boost Your Productivity!</p>
+        <div class="mt-6">
+            <a href="index.html" class="glow-btn bg-gradient-to-r from-red-500 to-red-700 text-white px-6 py-3 rounded-lg font-semibold hover:bg-red-600 mx-2">Get Started</a>
+            <a href="features.html" class="bg-red-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-red-600 mx-2">Explore Features</a>
+        </div>
+    </div>
+    <!-- Image -->
+    <div class="md:w-1/2 mt-10 md:mt-0 flex justify-center">
+        <img src="image.jpg" alt="Task Flow Dashboard" class="w-3/4 md:w-full hover:scale-105 transition-transform">
+    </div>
+    </div>
+</header>
+
+<!-- Key Features Section -->
+ <section class="py-16 px-6 text-center">
+    <h2 class="text-3xl font-bold">Key Features</h2>
+    <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-8">
+        <!-- Feature 1 -->
+         <div class="p-6 bg-gray-100 rounded-lg shadow-md transform transition hover:scale-105">
+            <img src="https://img.icons8.com/ios-filled/50/4a90e2/todo-list.png" class="mx-auto mb-3" alt="Task Management">
+            <h3 class="text-xl font-semibold mt-4">Task Management</h3>
+            <p class="text-gray-700">Easily add, edit, delete, and track your daily tasks.</p>
+        </div>
+        <!-- Feature 2 -->
+         <div class="p-6 bg-gray-100 rounded-lg shadow-md transform transition hover:scale-105">
+            <img src="https://img.icons8.com/ios-filled/50/f5a623/appointment-reminders.png" class="mx-auto mb-3" alt="Smart Reminders">
+            <h4 class="text-xl font-semibold text-yellow-500">Smart Reminders</h4>
+            <p class="text-gray-700">Never miss a deadline with timely alerts.</p>
+        </div>
+        <!-- Feature 3 -->
+         <div class="p-6 bg-gray-100 rounded-lg shadow-md transform transition hover:scale-105">
+            <img src="https://img.icons8.com/ios-filled/50/e74c3c/paint-palette.png" class="mx-auto mb-3" alt="Custom Themes">
+            <h4 class="text-xl font-semibold text-red-500">Custom Themes</h4>
+            <p class="text-gray-700">Choose your preferred layout and colors.</p>
+        </div>
+    </div>
+</section>
+<!-- Footer -->
+<footer class="bg-gray-900 text-white text-center py-4">
+    <p>© 2025 Task Flow | All rights reserved</p>
+</footer>
+<script type="module">
+// Import Firebase SDK
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.5.0/firebase-app.js";
+    import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/11.5.0/firebase-firestore.js";
+    
+// Your Firebase Config
+    const firebaseConfig = {
+        apiKey: "AIzaSyDH_SXn8VV9Mj4wNr2GfrdOZxQxw5zQR8s",
+        authDomain: "task-flow-c9d3d.firebaseapp.com",
+        projectId: "task-flow-c9d3d",
+        storageBucket: "task-flow-c9d3d.firebasestorage.app",
+        messagingSenderId: "149333052030",
+        appId: "1:149333052030:web:0d8f26a50bc40b033d262f",
+        measurementId: "G-V77SCJBGY4"
+    };
+    
+// Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    
+// Function to Add a Task
+    async function addTask(taskName, dueDate) {
+        try {
+            await addDoc(collection(db, "tasks"), {
+                name: taskName,
+                due: dueDate,
+                completed: false,
+            });
+            console.log("Task added successfully!");
+        } catch (e) {
+            console.error("Error adding task: ", e);
+        }
+    }
+    
+// Function to Fetch All Tasks
+    async function fetchTasks() {
+        const querySnapshot = await getDocs(collection(db, "tasks"));
+        querySnapshot.forEach((doc) => {
+            console.log(doc.id, " => ", doc.data());
+        });
+    }
+    addTask("Complete Firebase Setup", "2025-03-23");
+    </script>
+    
+<!-- JavaScript File -->
+ <script>
+ document.addEventListener("DOMContentLoaded", function () {
+    // Smooth Scroll
+        const scrollLinks = document.querySelectorAll(".scroll-link");
+        scrollLinks.forEach(link => {
+            link.addEventListener("click", function (event) {
+                event.preventDefault();
+                const targetId = this.getAttribute("href").substring(1);
+                document.getElementById(targetId).scrollIntoView({ behavior: "smooth" });
+            });
+        });
+        AOS.init(); // Initialize animations
+        // Typing Text Effect
+            const typingText = document.getElementById("typing-text");
+            const words = ["Organize Your Day, Boost Your Productivity!"];
+            let wordIndex = 0;
+            let letterIndex = 0;
+
+            function typeEffect() {
+            if (letterIndex < words[wordIndex].length) {
+                typingText.textContent += words[wordIndex][letterIndex];
+                letterIndex++;
+                setTimeout(typeEffect, 100);
+            } else {
+                setTimeout(eraseEffect, 1000);
+            }
+        }
+        function eraseEffect() {
+            if (letterIndex > 0) {
+                typingText.textContent = words[wordIndex].substring(0, letterIndex - 1);
+                letterIndex--;
+                setTimeout(eraseEffect, 100);
+            } else {
+                wordIndex = (wordIndex + 1) % words.length;
+                setTimeout(typeEffect, 500);
+            }
+        }
+        setTimeout(typeEffect, 1000);
+
+
+        
+    // Reveal Features on Scroll
+        const features = document.querySelectorAll(".hidden-feature");
+
+            function revealFeatures() {
+                const windowHeight = window.innerHeight;
+                features.forEach(feature => {
+                    const featureTop = feature.getBoundingClientRect().top;
+                    if (featureTop < windowHeight - 50) {
+                        feature.classList.add("visible");
+                    }
+                });
+            }
+
+            window.addEventListener("scroll", revealFeatures);
+            revealFeatures(); // Run on load in case some elements are in view
+        });
+        
+        <!-- Smooth Scroll Script -->
+
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener("click", function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute("href")).scrollIntoView({ behavior: "smooth" });
+            });
+        });
+
+    </script>
+</body>
+</html>
