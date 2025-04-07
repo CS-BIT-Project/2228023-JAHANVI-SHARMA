@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>User Interface</title>
+        <script src="https://unpkg.com/@tailwindcss/browser@4"></script>  
+        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+        <style>
+        /* Custom Fade-in Animation */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);}
+            to {
+                opacity: 1;
+                transform: translateY(0);}}
+                .fade-in {
+                    opacity: 0; }
+        @layer utilities {
+            .animate-fadeIn {
+                animation: fadeIn 0.8s ease-out forwards;}
+            }
+        /* Custom hover glow effect */
+        .hover-glow {
+            box-shadow: 0px 0px 8px 0px rgba(255, 255, 255, 0);
+            transition: box-shadow 0.3s ease-in-out;}
+        </style>
+    </head>
+    <body class="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-blue-200 to-purple-300 p-10" style="background-image: url('ab.jpg'); backdrop-filter: blur(4px);" >
+        <!-- UI Card -->
+         <div class="bg-white p-8 rounded-2xl shadow-lg text-center w-[90%] max-w-md transition-all duration-300 hover:shadow-2xl">
+            <h1 class="text-3xl font-bold text-gray-900 mb-4">Welcome to Our Interface</h1>
+            <p class="text-gray-700 mb-6 text-lg">A simple and user-friendly design for a smooth experience.</p>
+            
+        <!-- Buttons -->
+         <div class="mt-5 space-y-3">              
+            <button class="hover-glow w-full px-6 py-3 text-white bg-blue-600 rounded-lg text-lg font-semibold transition-all duration-300 hover:bg-blue-700 hover:scale-105 hover:shadow-lg">🚀 Fast & Responsive</button>
+            <button class="hover-glow w-full px-6 py-3 text-white bg-green-600 rounded-lg text-lg font-semibold transition-all duration-300 hover:bg-green-700 hover:scale-105 hover:shadow-lg">🎨 Clean & Minimalist</button>
+            <button class="hover-glow w-full px-6 py-3 text-white bg-purple-600 rounded-lg text-lg font-semibold transition-all duration-300 hover:bg-purple-700 hover:scale-105 hover:shadow-lg">🔥 Smooth Animations</button>
+            <a href="index.html">
+                <button id="start-btn" class="hover-glow w-full px-6 py-3 text-white bg-indigo-600 rounded-lg text-lg font-semibold transition-all duration-300 hover:bg-indigo-700 hover:scale-110 hover:shadow-xl border-2 border-transparent hover:border-indigo-400">Let's Get Started</button></a>
+            <a href="index.html">    
+                <button onclick="goHome()" class="w-full px-4 py-2 text-white font-semibold bg-gray-800 hover:bg-gray-900 transition-all rounded-lg shadow-md">⬅ Go Back to Home</button>
+        </div>
+        
+        <!-- JavaScript for Animations -->
+         <script>
+         // Add an alert when clicking the "Get Started" button
+            document.getElementById("startBtn").addEventListener("click", function() {
+                alert("Welcome! Let's get started.");
+            });
+            
+            function goHome() {
+                window.location.href = "index.html"; 
+                }
+</script>
+</body>
+</html>
