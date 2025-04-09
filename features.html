@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="english">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Features</title>
+    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+    <style>
+    /* Custom hover effect */
+    .feature-card:hover {
+        transform: translateY(-5px);
+        transition: all 0.3s ease-in-out;}
+    </style>
+</head>
+<body class="bg-blue-600 text-white">
+    <!-- Page Container -->
+     <div class="max-w-5xl mx-auto text-center py-12 px-4">
+        <h1 class="text-3xl font-bold mb-2">Explore Features of Daily Task Manager</h1>
+        <p class="text-lg text-gray-200 mb-8">Manage your daily tasks efficiently with these powerful features.</p>
+        
+    <!-- Features Grid -->
+     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Feature Cards -->
+         <div class="feature-card bg-white text-black p-6 rounded-lg shadow-lg hover:shadow-2xl">
+            <h3 class="font-semibold text-xl">Task Management</h3>
+            <p class="text-gray-600 mt-2">Easily add, edit, delete and track your tasks.</p>
+            <a href="addtask1.html" class="text-blue-500 mt-2 inline-block hover:underline">Add Your Tasks</a>
+        </div>
+        <div class="feature-card bg-white text-black p-6 rounded-lg shadow-lg hover:shadow-2xl">
+            <h3 class="font-semibold text-xl">Reminders & Alerts</h3>
+            <p class="text-gray-600 mt-2">Never miss a deadline with timely alerts.</p>
+            <a href="notifications.html" class="text-blue-500 mt-2 inline-block hover:underline">Notifications</a>
+        </div>
+        <div class="feature-card bg-white text-black p-6 rounded-lg shadow-lg hover:shadow-2xl">
+            <h3 class="font-semibold text-xl">Categorization</h3>
+            <p class="text-gray-600 mt-2">Organize tasks into categories.</p>
+            <a href="categorization.html" class="text-blue-500 mt-2 inline-block hover:underline">Prioritization</a>
+        </div>
+        <div class="feature-card bg-white text-black p-6 rounded-lg shadow-lg hover:shadow-2xl">
+            <h3 class="font-semibold text-xl">Progress Tracking</h3>
+            <p class="text-gray-600 mt-2">View tasks with visual insights.</p>
+            <a href="progresstracking.html" class="text-blue-500 mt-2 inline-block hover:underline">Tracker</a>
+        </div>
+        <div class="feature-card bg-white text-black p-6 rounded-lg shadow-lg hover:shadow-2xl">
+            <h3 class="font-semibold text-xl">User-Friendly Interface</h3>
+            <p class="text-gray-600 mt-2">Ensure an intuitive design for ease of use.</p>
+            <a href="userinterface.html" class="text-blue-500 mt-2 inline-block hover:underline">UI</a>
+        </div>
+        <div class="feature-card bg-white text-black p-6 rounded-lg shadow-lg hover:shadow-2xl">
+            <h3 class="font-semibold text-xl">Multi-Platform Compatibility</h3>
+            <p class="text-gray-600 mt-2">Access the application on different platforms.</p>
+            <a href="multiplatforms.html" class="text-blue-500 mt-2 inline-block hover:underline">Platforms</a>
+        </div>
+        <div class="feature-card bg-white text-black p-6 rounded-lg shadow-lg hover:shadow-2xl col-span-1 sm:col-span-2 lg:col-span-3">
+            <h3 class="font-semibold text-xl">Data Security & Backup</h3>
+            <p class="text-gray-600 mt-2">Your data is protected with backup support.</p>
+        </div>
+    </div>
+    <!-- Back to Top Button -->
+     <button id="backToTop" class="fixed bottom-6 right-6 bg-white text-blue-600 px-4 py-2 rounded-full shadow-lg hover:bg-gray-200 transition duration-300 hidden">↑ Top</button>
+    
+     <footer class="text-center mt-8 text-gray-200">
+        © 2025 Daily Task Manager. All rights reserved.
+    </footer>
+</div>
+
+<!-- JavaScript -->
+ <script>
+ // Back to Top Button Functionality
+    const backToTop = document.getElementById("backToTop");
+    window.addEventListener("scroll", function() {
+        if (window.scrollY > 300) {
+            backToTop.classList.remove("hidden");
+        } else {
+            backToTop.classList.add("hidden");
+        }
+    });
+    
+    backToTop.addEventListener("click", function() {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+</script>
+</body>
+</html>
