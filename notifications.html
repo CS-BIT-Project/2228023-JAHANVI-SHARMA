@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Reminders & Notifications</title>
+    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+</head>
+<body class="bg-gray-100 p-6 transition-all duration-300" id="body" style="background-image: url(abcdef.jpg); backdrop-filter: blur(4px);">
+    <div class="max-w-xl mx-auto bg-white shadow-lg rounded-lg p-6 dark:bg-gray-800 dark:text-white">
+        <h2 class="text-2xl font-bold mb-4 text-center">Task Reminders</h2>
+        
+        <!-- Add Task Form -->
+        <div class="mb-4">
+            <input type="text" id="taskInput" placeholder="Enter task..." 
+                class="w-full p-2 border border-gray-300 rounded-md dark:bg-gray-700 dark:text-white">
+            <input type="datetime-local" id="taskTime" 
+                class="w-full p-2 mt-2 border border-gray-300 rounded-md dark:bg-gray-700 dark:text-white">
+            
+            <!-- Recurring Option -->
+            <select id="recurringOption" 
+                class="w-full p-2 mt-2 border border-gray-300 rounded-md dark:bg-gray-700 dark:text-white">
+                <option value="none">No Recurrence</option>
+                <option value="daily">Daily</option>
+                <option value="weekly">Weekly</option>
+            </select>
+
+            <button onclick="addTask()" 
+                class="w-full bg-blue-500 text-white p-2 mt-2 rounded-md hover:bg-blue-600">
+                Add Task
+            </button>
+            <button onclick="testReminder()" 
+                class="w-full bg-green-500 text-white p-2 mt-2 rounded-md hover:bg-green-600">
+                Test Reminder
+            </button>
+        </div>
+
+        <!-- Task List -->
+        <ul id="taskList" class="space-y-2"></ul>
+
+        <!-- Notification Box -->
+        <div id="notificationBox" class="hidden fixed bottom-4 right-4 bg-green-500 text-white p-4 rounded-md shadow-md">
+            <p id="notificationText"></p>
+            <button id="startReminder" class="bg-blue-500 text-white px-4 py-2 rounded">Start Reminder</button>
+            <button id="stopReminder" class="bg-red-500 text-white px-4 py-2 rounded">Stop Reminder</button>
+            <button id="snoozeReminder" class="bg-yellow-500 text-white px-4 py-2 rounded">Snooze Reminder</button>
+        </div>
+    </div>
+    <audio id="reminderSound" src="remainder.mp3"></audio>
+    
+    <script>
+    document.addEventListener("DOMContentLoaded", () => {
+        loadTasks();
+        requestNotificationPermission();
+        loadDarkMode();
+    });
+    
+    // Select the audio element
+    let sound = document.getElementById("reminderSound");
+    
+    // Function to play the reminder sound
+    function playBeepSound() {
+        sound.currentTime = 0; // Reset audio to start
+        sound.play();
+        showNotification("Reminder Alert!", "Your task is due now!");
+    }
+    
+    // Function to stop the reminder sound
+    function stopBeepSound() {
+        sound.pause(); // Pause the audio
+        sound.currentTime = 0; // Reset to the start
+        }
+        
+    // Function to show a notification pop-up
+    function showNotification(title, message) {
+        if (Notification.permission === "granted") {
+            new Notification(title, { body: message });
+        } else if (Notification.permission !== "denied") {
+            Notification.requestPermission().then(permission => {
+                if (permission === "granted") {
+                    new Notification(title, { body: message });
+                }
+            });
+        }
+    }
+    
+    // Function to set a reminder after a certain time (in seconds)
+    function setReminder(timeInSeconds) {
+        setTimeout(() => {
+            playBeepSound();
+        }, timeInSeconds * 1000); // Convert seconds to milliseconds
+        }
+        
+    // Function to snooze the reminder for an additional time (in seconds)
+    function snoozeReminder(snoozeTime) {
+        stopBeepSound();
+        setTimeout(() => {
+            playBeepSound();
+        }, snoozeTime * 1000);
+    }
+    
+    // Event listeners for buttons
+       document.getElementById("startReminder").addEventListener("click", () => setReminder(5)); // Reminder after 5 seconds
+       document.getElementById("stopReminder").addEventListener("click", stopBeepSound);
+       document.getElementById("snoozeReminder").addEventListener("click", () => snoozeReminder(10)); // Snooze for 10 seconds
+    
+    // Add a new task
+    function addTask() {
+        let taskInput = document.getElementById("taskInput").value;
+        let taskTime = document.getElementById("taskTime").value;
+        let recurringOption = document.getElementById("recurringOption").value;
+
+    if (!taskInput || !taskTime) {
+        alert("Please enter a task and time.");
+        return;
+    }
+
+    let task = { 
+        text: taskInput, 
+        time: new Date(taskTime).getTime(), 
+        recurring: recurringOption 
+    };
+
+    let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+    tasks.push(task);
+    localStorage.setItem("tasks", JSON.stringify(tasks));
+
+    displayTasks();
+}
+
+// Display tasks
+function displayTasks() {
+    let taskList = document.getElementById("taskList");
+    taskList.innerHTML = "";
+    let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+
+    tasks.forEach((task, index) => {
+        let li = document.createElement("li");
+        li.className = "p-2 bg-gray-200 rounded-md flex justify-between items-center dark:bg-gray-700";
+        li.innerHTML = `
+            <span>${task.text} <span class="text-gray-600 dark:text-gray-300">(${new Date(task.time).toLocaleString()})</span></span>
+            <button onclick="deleteTask(${index})" class="text-red-500">❌</button>`;
+        taskList.appendChild(li);
+    });
+}
+
+// Delete a task
+function deleteTask(index) {
+    let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+    tasks.splice(index, 1);
+    localStorage.setItem("tasks", JSON.stringify(tasks));
+    displayTasks();
+}
+
+// Check reminders every 10 seconds
+function checkReminders() {
+    let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+    let now = new Date().getTime();
+
+    tasks.forEach((task, index) => {
+        if (task.time <= now) {
+            showNotification(task.text);
+            playBeepSound();
+
+            if (task.recurring === "daily") {
+                task.time = new Date(task.time + 86400000).getTime(); // Add 1 day
+            } else if (task.recurring === "weekly") {
+                task.time = new Date(task.time + 604800000).getTime(); // Add 1 week
+            } else {
+                tasks.splice(index, 1); // Remove non-recurring tasks
+            }
+
+            localStorage.setItem("tasks", JSON.stringify(tasks));
+            displayTasks();
+        }
+    });
+}
+
+// Show a notification
+function showNotification(taskText) {
+    if ("Notification" in window && Notification.permission === "granted") {
+        new Notification("Task Reminder", {
+            body: `Don't forget: ${taskText}`,
+            icon: "https://cdn-icons-png.flaticon.com/512/1828/1828640.png"
+        });
+    }
+
+    let notificationBox = document.getElementById("notificationBox");
+    let notificationText = document.getElementById("notificationText");
+    
+    notificationText.innerText = `Reminder: ${taskText}`;
+    notificationBox.classList.remove("hidden");
+
+    setTimeout(() => {
+        notificationBox.classList.add("hidden");
+    }, 5000);
+}
+
+// Play beep sound
+function playBeepSound() {
+    document.getElementById("reminderSound").play();
+}
+
+// Snooze Reminder
+function snoozeReminder() {
+    let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+    tasks.forEach(task => {
+        task.time += 5 * 60000; // Add 5 minutes
+    });
+    localStorage.setItem("tasks", JSON.stringify(tasks));
+    document.getElementById("notificationBox").classList.add("hidden");
+}
+
+// Manually test a reminder
+function testReminder() {
+    showNotification("This is a test reminder!");
+    playBeepSound();
+}
+
+// Check for reminders every 10 seconds
+setInterval(checkReminders, 10000);
+
+displayTasks();
+</script>
+</body>
+</html>

@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Progress Tracker</title>
+    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+</head>
+<body class="bg-gray-100 flex justify-center items-center min-h-screen" style="background-image: url(abcde.jpg); backdrop-filter: blur(4px);">
+
+    <div class="bg-white p-6 rounded-lg shadow-md w-96">
+        <h2 class="text-2xl font-bold text-center">📊 Track Your Progress</h2>
+        <p class="text-gray-600 text-center">Manage and update your tasks easily.</p>
+
+        <!-- Input Section -->
+        <div class="mt-4 flex space-x-2">
+            <input type="text" id="taskInput" placeholder="Enter a new task..."
+                class="flex-1 p-2 border rounded-lg">
+            <select id="taskStatus" class="p-2 border rounded-lg">
+                <option value="Pending">Pending</option>
+                <option value="In Progress">In Progress</option>
+                <option value="Completed">Completed</option>
+            </select>
+            <button onclick="addTask()" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">
+                Add Task
+            </button>
+        </div>
+
+        <!-- Task Lists -->
+        <div class="mt-6">
+            <h3 class="text-lg font-bold">🟡 Pending Tasks</h3>
+            <ul id="pendingTasks" class="list-disc pl-5 text-gray-700"></ul>
+
+            <h3 class="text-lg font-bold mt-4">🔵 In Progress</h3>
+            <ul id="inProgressTasks" class="list-disc pl-5 text-gray-700"></ul>
+
+            <h3 class="text-lg font-bold mt-4">✅ Completed Tasks</h3>
+            <ul id="completedTasks" class="list-disc pl-5 text-gray-700"></ul>
+        </div>
+
+        <footer class="text-center text-gray-500 mt-6">
+            © 2025 Daily Task Manager | All rights reserved
+        </footer>
+    </div>
+
+    <script>
+        // Load tasks from LocalStorage
+        document.addEventListener("DOMContentLoaded", loadTasks);
+
+        function addTask() {
+            let taskText = document.getElementById("taskInput").value.trim();
+            let taskStatus = document.getElementById("taskStatus").value;
+
+            if (taskText === "") {
+                alert("Please enter a task!");
+                return;
+            }
+
+            let task = { text: taskText, status: taskStatus };
+            let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+            tasks.push(task);
+            localStorage.setItem("tasks", JSON.stringify(tasks));
+
+            document.getElementById("taskInput").value = ""; // Clear input
+            loadTasks(); // Refresh task list
+        }
+
+        function loadTasks() {
+            let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+            document.getElementById("pendingTasks").innerHTML = "";
+            document.getElementById("inProgressTasks").innerHTML = "";
+            document.getElementById("completedTasks").innerHTML = "";
+
+            tasks.forEach((task, index) => {
+                let taskItem = document.createElement("li");
+                taskItem.classList.add("flex", "justify-between", "items-center", "mt-2");
+
+                let taskText = document.createElement("span");
+                taskText.textContent = task.text;
+
+                let select = document.createElement("select");
+                select.classList.add("ml-2", "border", "rounded");
+                select.innerHTML = `
+                    <option value="Pending" ${task.status === "Pending" ? "selected" : ""}>Pending</option>
+                    <option value="In Progress" ${task.status === "In Progress" ? "selected" : ""}>In Progress</option>
+                    <option value="Completed" ${task.status === "Completed" ? "selected" : ""}>Completed</option>
+                `;
+
+                select.addEventListener("change", () => updateTaskStatus(index, select.value));
+
+                taskItem.appendChild(taskText);
+                taskItem.appendChild(select);
+
+                if (task.status === "Completed") {
+                    let deleteBtn = document.createElement("button");
+                    deleteBtn.innerHTML = "🗑";
+                    deleteBtn.classList.add("ml-2", "text-red-500", "hover:text-red-700");
+                    deleteBtn.onclick = () => deleteTask(index);
+
+                    taskItem.appendChild(deleteBtn);
+                    document.getElementById("completedTasks").appendChild(taskItem);
+                } else if (task.status === "Pending") {
+                    document.getElementById("pendingTasks").appendChild(taskItem);
+                } else if (task.status === "In Progress") {
+                    document.getElementById("inProgressTasks").appendChild(taskItem);
+                }
+            });
+        }
+
+        function updateTaskStatus(index, newStatus) {
+            let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+            tasks[index].status = newStatus;
+            localStorage.setItem("tasks", JSON.stringify(tasks));
+            loadTasks(); // Refresh task list
+        }
+
+        function deleteTask(index) {
+            let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+            tasks.splice(index, 1);
+            localStorage.setItem("tasks", JSON.stringify(tasks));
+            loadTasks(); // Refresh task list
+        }
+    </script>
+
+</body>
+</html>

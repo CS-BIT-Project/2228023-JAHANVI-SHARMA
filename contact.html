@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us</title>
+    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+    <!-- Add EmailJS SDK -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <script type="text/javascript">
+        // Initialize EmailJS with your Public Key (User ID)
+        (function(){
+            emailjs.init("-fx6MoPrA_1LSbUKH"); // Replace with your EmailJS User ID (Public Key)
+        })();
+    </script>
+</head>
+<body class="flex justify-center items-center min-h-screen bg-gray-100">
+    <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
+        <h2 class="text-2xl font-bold text-center mb-2">Contact Us</h2>
+        <p class="text-gray-600 text-center mb-4">Get in Touch</p>
+        <div class="text-center mb-4">
+            <p><strong>Email:</strong> <a href="mailto:support@dailytaskmanager.com" class="text-blue-500">support@dailytaskmanager.com</a></p>
+            <p><strong>Phone:</strong> <a href="tel:+917906586487" class="text-blue-500">+91 7906586487</a></p>
+            <p><strong>Address:</strong> Lane Number-2, Dehradun, Uttarakhand</p>
+        </div>
+        <form id="contactForm">
+            <label class="block mb-2 text-gray-700">Your Name:</label>
+            <input type="text" id="name" class="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-400 outline-none mb-3" placeholder="Enter your name">
+
+            <label class="block mb-2 text-gray-700">Your Email:</label>
+            <input type="email" id="email" class="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-400 outline-none mb-3" placeholder="Enter your email">
+
+            <label class="block mb-2 text-gray-700">Your Message:</label>
+            <textarea id="message" class="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-400 outline-none mb-3" rows="3" placeholder="Type your message..."></textarea>
+
+            <button type="submit" class="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 transition duration-300">Send Message</button>
+        </form>
+        <p class="text-center text-gray-700 mt-4">Follow Us:</p>
+        <div class="flex justify-center space-x-4 mt-2">
+            <a href="#" class="text-blue-500 hover:underline">Facebook</a>
+            <a href="#" class="text-red-500 hover:underline">Instagram</a>
+        </div>
+    </div>
+
+    <!-- JavaScript for Form Validation and EmailJS -->
+    <script>
+    document.getElementById("contactForm").addEventListener("submit", function(event) {
+        event.preventDefault();
+
+        let name = document.getElementById("name").value.trim();
+        let email = document.getElementById("email").value.trim();
+        let message = document.getElementById("message").value.trim();
+
+        if (name === "" || email === "" || message === "") {
+            alert("Please fill in all fields.");
+            return;
+        }
+
+        // EmailJS parameters
+        let templateParams = {
+            from_name: name,
+            from_email: email,
+            to_email: "sharmajahanvi696@gmail.com",
+            message: message
+        };
+
+        emailjs.send("service_o2iwojp", "template_655onfp", templateParams)
+            .then(function(response) {
+                alert("Message sent successfully!");
+                document.getElementById("contactForm").reset();
+            }, function(error) {
+                alert("Failed to send message. Please try again later.");
+                console.error("EmailJS Error:", error);
+            });
+    });
+    </script>
+</body>
+</html>

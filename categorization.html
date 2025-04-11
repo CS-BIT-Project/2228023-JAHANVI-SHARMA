@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Categorization</title>
+    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+</head>
+<body class="flex justify-center items-center min-h-screen bg-gray-100">
+    <div class="bg-white shadow-lg rounded-xl p-6 w-96">
+        <h2 class="text-2xl font-semibold text-center mb-4 text-gray-800">Task Categories</h2>
+        
+        <!-- Predefined Categories -->
+         <p class="text-gray-700 font-medium mb-2">Predefined Categories:</p>
+         <div class="space-y-2">
+            <button class="w-full bg-blue-500 text-white py-2 rounded-lg shadow-md hover:bg-blue-600 transition">Personal</button>
+            <button class="w-full bg-green-500 text-white py-2 rounded-lg shadow-md hover:bg-green-600 transition">Work</button>
+            <button class="w-full bg-purple-500 text-white py-2 rounded-lg shadow-md hover:bg-purple-600 transition">Study</button>
+        </div>
+        
+        <!-- Add Custom Category -->
+         <p class="text-gray-700 font-medium mt-4 mb-2">Add Custom Category:</p>
+         <div class="flex">
+            <input id="categoryInput" type="text" placeholder="Enter custom category..." class="w-full p-2 border border-gray-300 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-blue-400">
+            <button onclick="addCategory()" class="bg-blue-500 text-white px-4 py-2 rounded-r-lg hover:bg-blue-600 transition">Add</button>
+        </div>
+        
+        <!-- Custom Categories -->
+         <p class="text-gray-700 font-medium mt-4">Custom Categories:</p>
+         <div id="customCategories" class="mt-2 text-gray-600 italic">No custom categories added.</div>
+        </div>
+        
+        <script>
+        function addCategory() {
+            let input = document.getElementById("categoryInput").value.trim();
+            let categoryList = document.getElementById("customCategories");
+            if (input !== "") {
+                let newCategory = document.createElement("div");
+                newCategory.className = "bg-gray-200 text-gray-800 p-2 rounded-lg mt-2 flex justify-between items-center shadow-sm";
+                newCategory.innerHTML = `${input} <button onclick="this.parentElement.remove()" class="text-red-500 text-sm font-semibold hover:text-red-700">Remove</button>`;
+                if (categoryList.innerHTML === "No custom categories added.") {
+                    categoryList.innerHTML = "";}
+                    categoryList.appendChild(newCategory);
+                    document.getElementById("categoryInput").value = ""; // Clear input field
+            }}
+    </script>
+</body>
+</html>

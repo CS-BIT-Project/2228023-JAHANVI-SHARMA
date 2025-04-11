@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login</title>
+  <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+</head>
+<body class="bg-gray-900 flex items-center justify-center min-h-screen">
+
+  <div class="bg-white p-8 rounded-lg shadow-lg w-96">
+    <h2 class="text-2xl font-bold text-center mb-6">Login</h2>
+    
+    <!-- Success & Error Messages -->
+    <p id="successMessage" class="hidden bg-green-500 text-white p-2 rounded text-center mb-2">Login Successful! ✅</p>
+    <p id="errorMessage" class="hidden bg-red-500 text-white p-2 rounded text-center mb-2"></p>
+
+    <input id="email" type="email" placeholder="Email" class="w-full p-2 mb-3 border rounded">
+    <input id="password" type="password" placeholder="Password" class="w-full p-2 mb-3 border rounded">
+    
+    <button id="loginBtn" onclick="loginUser()" class="w-full bg-blue-500 text-white p-2 rounded mt-4 hover:bg-blue-600">Login</button>
+
+    <p class="text-sm text-center mt-3"><a href="forgotpwd.html" class="text-blue-600">Forgot Password?</a></p>
+    <p class="text-sm text-center mt-2">Don't have an account? <a href="signuppage.html" class="text-blue-600">Sign up</a></p>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDF6vStbajZJubvUo3KirngD3sWGCAy8jY",
+      authDomain: "sign-up-d285c.firebaseapp.com",
+      projectId: "sign-up-d285c",
+      storageBucket: "sign-up-d285c.appspot.com",
+      messagingSenderId: "294157816977",
+      appId: "1:294157816977:web:482ae84adb2e2475d01b30"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    window.loginUser = async function () {
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value;
+      const loginBtn = document.getElementById("loginBtn");
+      const successMessage = document.getElementById("successMessage");
+      const errorMessage = document.getElementById("errorMessage");
+
+      // Reset messages
+      successMessage.classList.add("hidden");
+      errorMessage.classList.add("hidden");
+      errorMessage.textContent = "";
+
+      // Input validation
+      if (!email || !email.includes("@") || !email.includes(".")) {
+        errorMessage.textContent = "Invalid email format!";
+        errorMessage.classList.remove("hidden");
+        return;
+      }
+      if (password.length < 6) {
+        errorMessage.textContent = "Password must be at least 6 characters.";
+        errorMessage.classList.remove("hidden");
+        return;
+      }
+
+      // Show loading state
+      loginBtn.textContent = "Logging in...";
+      loginBtn.disabled = true;
+
+      try {
+        const userCredential = await signInWithEmailAndPassword(auth, email, password);
+        
+        // Show success message
+        successMessage.classList.remove("hidden");
+
+        // Redirect to index.html after 2 seconds
+        setTimeout(() => {
+          window.location.href = "index.html";
+        }, 2000);
+        
+      } catch (error) {
+        errorMessage.textContent = "Login failed: " + error.message;
+        errorMessage.classList.remove("hidden");
+      }
+
+      // Reset button state
+      loginBtn.textContent = "Login";
+      loginBtn.disabled = false;
+    };
+  </script>
+
+</body>
+</html>

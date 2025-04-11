@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en" class="">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Add Task</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+    tailwind.config = {
+    darkMode: 'class',
+    theme: {
+    extend: {
+      colors: {
+        primary: "#3b82f6",
+      },
+    },
+  },
+}
+  </script>
+  <link rel="icon" href="at.jpg">
+</head>
+<body class="flex items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-900 dark:text-white transition-all" style="background-image: url(task.png); backdrop-filter: blur(8px);">
+  <!-- ✅ Notification Message -->
+   <div id="notification" class="fixed top-5 right-5 bg-green-500 text-white px-4 py-2 rounded shadow-md hidden z-50"></div>
+  
+  <!-- Task Manager Form -->
+   <div class="w-full max-w-md p-6 bg-white dark:bg-gray-800 rounded-xl shadow-lg">
+    <div class="flex justify-between items-center mb-4">
+      <h1 class="text-xl font-bold text-blue-600 dark:text-blue-400">📝 Task Manager</h1>
+      
+  <!-- Dark Mode Toggle -->
+   <button id="toggleDark" class="px-3 py-1 bg-gray-300 dark:bg-gray-600 rounded text-sm">🌙 Dark Mode</button>
+  </div>
+  
+  <!-- Task Input -->
+   <label class="block font-semibold dark:text-light">Task</label>
+   <input type="text" id="taskInput" class="w-full p-2 border rounded mb-2 dark:bg-gray-700 dark:border-gray-600" placeholder="Add a task...">
+   
+  <!-- Date Input -->
+   <label class="block font-semibold dark:text-light">Due Date & Time</label>
+   <input type="datetime-local" id="taskDate" class="w-full p-2 border rounded mb-2 dark:bg-gray-700 dark:border-gray-600">
+   
+  <!-- Priority Selection -->
+   <label class="block font-semibold dark:text-light">Priority</label>
+   <select id="priority" class="w-full p-2 border rounded mb-2 dark:bg-gray-700 dark:border-gray-600">
+    <option value="High">🔥 High Priority</option>
+    <option value="Medium" selected>⚡ Medium Priority</option>
+    <option value="Low">🟢 Low Priority</option>
+  </select>
+  
+  <!-- Category Selection -->
+   <label class="block font-semibold dark:text-light">Category</label>
+   <select id="category" class="w-full p-2 border rounded mb-2 dark:bg-gray-700 dark:border-gray-600">
+    <option value="Work">📂 Work</option>
+    <option value="Personal">🏠 Personal</option>
+    <option value="Study">📖 Study</option>
+    <option value="Other">🔖 Other</option>
+  </select>
+  
+  <!-- Custom Category Input -->
+   <label class="block font-semibold dark:text-light">Custom Category (Optional)</label>
+   <input type="text" id="customCategory" placeholder="Enter custom category..." class="w-full p-2 border rounded mb-4 dark:bg-gray-800 dark:text-light">
+   
+   <button id="addTask" class="w-full p-2 bg-blue-600 text-white rounded hover:bg-blue-700">➕ Add Task</button>
+   
+  <!-- Task List -->
+   <ul id="taskList" class="mt-4 space-y-2"></ul>
+  </div>
+  
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-app.js";
+import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCgAOigRhYbNmpXWN2dtyXAN9LM3mfMRT4",
+  authDomain: "add-task-4b278.firebaseapp.com",
+  projectId: "add-task-4b278",
+  storageBucket: "add-task-4b278.appspot.com",
+  messagingSenderId: "430974275356",
+  appId: "1:430974275356:web:bd95913b437bf8e5e8b4d9"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const tasksCollection = collection(db, "tasks");
+
+const taskInput = document.getElementById("taskInput");
+const taskDate = document.getElementById("taskDate");
+const taskList = document.getElementById("taskList");
+const priorityInput = document.getElementById("priority");
+const categoryInput = document.getElementById("category");
+
+const showNotification = (message) => {
+  const notify = document.getElementById("notification");
+  notify.textContent = message;
+  notify.classList.remove("hidden");
+  setTimeout(() => {
+    notify.classList.add("hidden");
+  }, 3000); // Hide after 3 seconds
+    };
+
+
+document.getElementById("addTask").addEventListener("click", async () => {
+  const text = taskInput.value.trim();
+  const date = taskDate.value;
+  const priority = priorityInput.value;
+  const category = categoryInput.value;
+  
+  if (!text || !date) {
+    alert("Please enter task and date!");
+    return;
+  }
+  
+  const task = { text, date, priority, category };
+  const docRef = await addDoc(tasksCollection, task);
+  
+  displayTask({ id: docRef.id, ...task });
+  saveToLocalStorage({ id: docRef.id, ...task });
+  showNotification("✅ Task added successfully!");
+
+  taskInput.value = "";
+  taskDate.value = "";
+  priorityInput.value = "Medium";
+  categoryInput.value = "Work";
+});
+
+function displayTask(task) {
+  const li = document.createElement("li");
+  li.className = "bg-gray-200 dark:bg-gray-700 p-3 rounded flex justify-between items-center";
+  li.innerHTML = `
+  <div>
+    <p class="font-medium">${task.text}</p>
+    <small class="block text-sm text-gray-600 dark:text-gray-300">📅 ${task.date}</small>
+    <span class="text-xs px-2 py-1 rounded ${getPriorityClass(task.priority)}">${task.priority}</span>
+    <span class="text-xs px-2 py-1 rounded bg-purple-200 dark:bg-purple-600">${task.category}</span>
+  </div>
+  <button class="text-red-500" onclick="deleteTask('${task.id}', this)">🗑</button>
+  `;
+  taskList.appendChild(li);
+}
+
+window.deleteTask = async (id, btn) => {
+  await deleteDoc(doc(db, "tasks", id));
+  btn.closest("li").remove();
+  let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+  tasks = tasks.filter(task => task.id !== id);
+  localStorage.setItem("tasks", JSON.stringify(tasks));
+  showNotification("🗑 Task deleted!");
+};
+
+const storedTasks = JSON.parse(localStorage.getItem("tasks")) || [];
+storedTasks.forEach(task => displayTask(task));
+
+function saveToLocalStorage(task) {
+  const current = JSON.parse(localStorage.getItem("tasks")) || [];
+  current.push(task);
+  localStorage.setItem("tasks", JSON.stringify(current));
+}
+
+function getPriorityClass(priority) {
+  return priority === "High" ? "bg-red-400 text-white"
+  : priority === "Medium" ? "bg-yellow-300"
+  : "bg-green-400 text-white";
+}
+
+const toggleDark = document.getElementById("toggleDark");
+toggleDark.addEventListener("click", () => {
+  const html = document.documentElement;
+  html.classList.toggle("dark");
+  localStorage.setItem("darkMode", html.classList.contains("dark"));
+});
+
+if (localStorage.getItem("darkMode") === "true") {
+  document.documentElement.classList.add("dark");
+}
+</script>
+</body>
+</html>
